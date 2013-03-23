@@ -2,7 +2,7 @@ package main
 
 import (
   "fmt"
-  i "inventory"
+  i "ingestion"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-package car
+package ingestion
 
 type Car struct {
   DealerID                      string
