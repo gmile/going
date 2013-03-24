@@ -27,7 +27,29 @@ func (i *Inventory) Initialize(csv_path string) {
 }
 
 // no other car of the same make
-func (i *Inventory) single_cars_cars (cars []Car) {
+func (inv *Inventory) SingleCars() (cars []Car) {
+  makes := map[string]int{}
+
+  for i, car := range inv.Cars {
+    _, exists := makes[car.Make]
+
+    if exists {
+      delete(makes, car.Make)
+    } else {
+      makes[car.Make] = i
+    }
+  }
+
+  carsNum      := len(makes)
+  filteredCars := make([]Car, carsNum)
+
+  x := 0
+  for _, car_make_idx := range makes {
+    filteredCars[x] = inv.Cars[ car_make_idx ]
+    x++
+  }
+
+  return filteredCars
 }
 
 // at least two of the same make exist
