@@ -40,8 +40,7 @@ func (inv *Inventory) SingleCars() (cars []*Car) {
     }
   }
 
-  carsNum      := len(makes)
-  filteredCars := make([]*Car, carsNum)
+  filteredCars := make([]*Car, len(makes))
 
   x := 0
   for _, car_make_idx := range makes {
