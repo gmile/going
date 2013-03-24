@@ -27,7 +27,7 @@ func (i *Inventory) Initialize(csv_path string) {
 }
 
 // no other car of the same make
-func (inv *Inventory) SingleCars() (cars []Car) {
+func (inv *Inventory) SingleCars() (cars []*Car) {
   makes := map[string]int{}
 
   for i, car := range inv.Cars {
@@ -41,11 +41,11 @@ func (inv *Inventory) SingleCars() (cars []Car) {
   }
 
   carsNum      := len(makes)
-  filteredCars := make([]Car, carsNum)
+  filteredCars := make([]*Car, carsNum)
 
   x := 0
   for _, car_make_idx := range makes {
-    filteredCars[x] = inv.Cars[ car_make_idx ]
+    filteredCars[x] = &inv.Cars[ car_make_idx ]
     x++
   }
 
