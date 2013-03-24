@@ -4,7 +4,7 @@ import (
   log "fmt" 
 )
 
-func returnSelected(incomingNumbers []string) (selectedObjects []*string) {
+func returnNonBlank(incomingNumbers []string) (selectedObjects []*string) {
   selected := make([]*string, 3)
 
   selected[0] = &incomingNumbers[0]
@@ -25,7 +25,7 @@ func main() {
   }
 
   log.Println("Selected values addresses:")
-  for _, value := range returnSelected(my_array) {
+  for _, value := range returnNonBlank(my_array) {
     log.Println(&value, "=", value)
   }
 
