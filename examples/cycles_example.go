@@ -9,7 +9,7 @@ func main() {
     model string
   }
 
-  cars   := [150]Car{}
+  cars   := [15]Car{}
   makers := [5]string{ "Jeep", "Mercedes", "Porshe", "McLaren", "Audi" }
   models := [5]string{ "Model A", "Model B", "Model C", "Model D", "Model E" }
 
@@ -34,7 +34,7 @@ func main() {
       }
     } else {
       makes[car.maker] = map[string][]int {}
-      makes[car.maker][car.model] = make([]int, 1, 20)
+      makes[car.maker][car.model] = make([]int, 1)
       makes[car.maker][car.model][0] = i
     }
   }
