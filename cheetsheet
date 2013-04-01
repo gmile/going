@@ -1,0 +1,128 @@
+// declaring a variable
+var a int
+var bool b
+a = 15
+b = false
+
+var a int = 5
+
+a := 15     // may only be used inside functions
+b := false
+
+var (
+  a int
+  b bool
+)
+
+var x, y int
+a, b := 20, 16
+
+// declaring a constant
+// constants are ONLY numbers, strings or booleans
+
+const x = 42
+
+const (
+  a = 1
+  b = 2
+)
+
+const (
+  a = 1
+  b string = "Example" 
+)
+
+// declaring a string
+
+var s string = "hello"
+
+s := "hello"
+
+s := "Starting point" +
+     "Ending point"
+
+s := `Starting point
+      Ending point` // contains newline characters and spaces
+
+// declaring a char (rune)
+
+c := 'x'
+
+// order precedence (from highest to lowest)
+
+* / % << >> & &^
++ - | ^
+==  !=  <  <=  >  >=
+<-
+&&
+||
+
+// keywords
+
+break     default     func    interface select
+case      defer       go      map       struct
+chan      else        goto    package   switch
+const     fallthrough if      range     type
+continue  for         import  return    var
+
+// for loop
+
+for init; cond; post {}
+for cond {}
+for {}
+
+// switch
+
+switch x {
+  case 0: fallthrough
+  case 1: f1()
+  case 2, 3:
+    f2()
+  default:
+    g()
+}
+
+// predefined functions
+
+close   new     panic   complex
+delete  make    recover real
+len     append  print   imag
+cap     copy    println
+
+// arrays
+
+var a [3]int
+a := [3]int{ 1, 2, 3 }
+a := [...]int{ 1, 2, 3 }
+
+a := [2][2]int{ [2]int{1,2}, [2]int{3,4} }
+a := [2][2]int{ [...]int{1,2}, [...]int{3,4} }
+a := [2][2]int{ {1,2}, {3,4} }
+
+// slices
+
+sl := make([]int, 10)
+
+var array[m]int
+sl := array[ : ]
+sl := array[0: ]
+sl := array[0:n]
+sl := array[ :n]
+sl := array[x,y]
+len(slice) == n
+cap((slice) == m
+len(array) == cap(array) == m
+
+// append
+
+s0 := []int{ 0 }
+s1 := append(s0, 1)
+s2 := append(s1, 2, 3)
+s3 := append(s0, s1, s2...)
+s4 := append(s0, s1, s2..., 4) ???
+
+// maps
+
+if _, ok = monthdays["Jan"]; ok {
+  ...
+}
