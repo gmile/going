@@ -1,6 +1,7 @@
 package main
 
 import "net"
+import "bufio"
 
 func main() {
   conn, err := net.Dial("tcp", ":8080")
@@ -9,9 +10,8 @@ func main() {
     println("There was an error:", err)
   }
 
-  buffer := make([]byte, 2)
-  buffer[0] = 1
-  buffer[1] = 251
+  my_string_writer := bufio.NewWriter(conn)
 
-  conn.Write(buffer)
+  _, err = my_string_writer.WriteString("Example")
+  err = my_string_writer.Flush()
 }

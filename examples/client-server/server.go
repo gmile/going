@@ -1,6 +1,7 @@
 package main
 
 import "net"
+import "bufio"
 
 func main() {
   ln, err := net.Listen("tcp", ":8080")
@@ -16,15 +17,11 @@ func main() {
       println("Didn't work")
     }
 
-    buffer := make([]byte, 2)
-    size, err := conn.Read(buffer)
+    reader := bufio.NewReader(conn)
+    my_string, err := reader.ReadString('\n')
 
     if err != nil {
-      println("Didn't work")
+      println("You said:", my_string)
     }
-
-    println(size)
-    println(buffer[0])
-    println(buffer[1])
   }
 }
