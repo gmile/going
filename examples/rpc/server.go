@@ -1,6 +1,7 @@
 package main
 
-import "tcp/rpc"
+import "net"
+import "net/rpc"
 
 type Region struct {
   X, Y int
@@ -8,30 +9,20 @@ type Region struct {
 
 type Server int
 
-func (s *Server) GetRegion(id *int, reply *Region) {
-  // 1. find the region in DB
-  // 2. return it back
-
-  found_region = new(Region)
-  found_region.X = 10
-  found_region.Y = 20
-
-  *Region = found_region
+func (s *Server) GetRegion(id *int, reply *Region) error {
+  reply.X = 1
+  reply.Y = 1
 
   return nil
 }
 
 func main() {
-  server := new(Server)
+  listener, _ := net.Listen("tcp", ":8080")
 
-  rpc.Register(server)
-  // rpc.HandleHTTP()
+  rpc_server := rpc.NewServer()
+  rpc_server.Register( new(Server) )
 
-  l, e := net.Listen("tcp", ":1234")
-
-  if e != nil {
-    log.Fatal("listen error:", e)
+  for {
+    rpc_server.Accept(listener)
   }
-
-  go http.Serve(l, nil)
 }
