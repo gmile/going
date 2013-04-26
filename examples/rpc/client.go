@@ -9,10 +9,10 @@ type Region struct {
 func main() {
   client, _ := rpc.Dial("tcp", ":8080")
 
-  x := Region{0,0}
+  region := Region{0,0}
 
-  div_call := client.Go("Server.GetRegion", 1, &x, nil)
+  div_call := client.Go("MyRegionServer.GetRegion", 1, &region, nil)
   <-div_call.Done
 
-  println(x.X, x.Y)
+  println(region.X, region.Y)
 }
