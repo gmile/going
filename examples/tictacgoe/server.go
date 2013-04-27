@@ -43,8 +43,8 @@ func main() {
 
 	fmt.Printf("\n Waiting for opponent...\n")
 
-  // my_mark
-  // opponents_mark
+  // my_mark := 'X'
+  // opponents_mark := 'O'
 
 	for {
 		conn, _ := listener.Accept()
