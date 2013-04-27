@@ -4,12 +4,15 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+  "math/rand"
 )
+
+// refactor to my_mark and my_turn?
 
 type Game struct {
   player1_mark rune
   player2_mark rune
-  game_starts_from byte
+  i_go_first byte
   conn net.Conn
   board [3][3]rune
 }
@@ -41,12 +44,15 @@ func (game *Game) RecordTurn(mark rune, row rune, col byte) {
   game.DrawBoard()
 }
 
-func (game *Game) Player1Turn() {
-  fmt.Printf("\nMake a turn:\n")
+func (game *Game) readInput() (col byte, row rune) {
+  fmt.Scanf("%c%d", &row, &col)
+  return
+}
 
-  // TODO: ask for input
-  var col byte = 1
-  row := 'a'
+func (game *Game) Player1Turn() {
+  fmt.Printf("\nMake a turn: ")
+
+  col, row := game.readInput()
 
   my_turn := bufio.NewWriter(game.conn)
   defer my_turn.Flush()
@@ -81,8 +87,11 @@ func (game *Game) Start() {
 
   game.conn = conn
 
-  game.set_marks()
-  game.set_turn_sequence()
+  writer := bufio.NewWriter(game.conn)
+  game.set_marks(writer)
+  game.set_turn_sequence(writer)
+  writer.Flush()
+
   game.play()
 }
 
@@ -92,45 +101,38 @@ func (game *Game) Join() {
 
   game.conn = conn
 
-  game.get_marks()
-  game.get_turn_sequence()
+  reader := bufio.NewReader(game.conn)
+  game.get_marks(reader)
+  game.get_turn_sequence(reader)
+
   game.play()
 }
 
-func (game *Game) set_turn_sequence() {
-  // TODO: pick this randomly from (0, 1)
-  game.game_starts_from = 2
-
-  writer := bufio.NewWriter(game.conn)
-  writer.WriteByte(game.game_starts_from)
-  writer.Flush()
+func (game *Game) set_turn_sequence(writer *bufio.Writer) {
+  game.i_go_first = byte(rand.Intn(2))
+  writer.WriteByte(1 - game.i_go_first)
 }
 
-func (game *Game) get_turn_sequence() {
-  reader := bufio.NewReader(game.conn)
-  game.game_starts_from, _ = reader.ReadByte()
+func (game *Game) get_turn_sequence(reader *bufio.Reader) {
+  game.i_go_first, _ = reader.ReadByte()
 }
 
-func (game *Game) set_marks() {
-  // TODO: pick these randomly
-  player1_mark := 'X'
-  player2_mark := 'O'
+func (game *Game) set_marks(writer *bufio.Writer) {
+  if rand.Intn(2) == 0 {
+    game.player1_mark = 'X'
+    game.player2_mark = 'O'
+  } else {
+    game.player1_mark = 'O'
+    game.player2_mark = 'X'
+  }
 
-  game.player1_mark = player1_mark
-  game.player2_mark = player2_mark
-
-  marks := bufio.NewWriter(game.conn)
-  defer marks.Flush()
-
-  marks.WriteRune(player1_mark)
-  marks.WriteRune(player2_mark)
+  writer.WriteRune(game.player1_mark)
+  writer.WriteRune(game.player2_mark)
 }
 
-func (game *Game) get_marks() {
-  marks := bufio.NewReader(game.conn)
-
-  game.player1_mark, _, _ = marks.ReadRune()
-  game.player2_mark, _, _ = marks.ReadRune()
+func (game *Game) get_marks(reader *bufio.Reader) {
+  game.player1_mark, _, _ = reader.ReadRune()
+  game.player2_mark, _, _ = reader.ReadRune()
 }
 
 func (game *Game) play() {
@@ -141,15 +143,15 @@ func (game *Game) play() {
 
   game.DrawBoard()
 
-  if game.game_starts_from == 1 {
-    fmt.Printf("Your turn is first.\n")
+  if game.i_go_first == 1 {
+    fmt.Printf("\nYour turn is first.\n")
 
     for {
       game.Player1Turn()
       game.Player2Turn()
     }
   } else {
-    fmt.Printf("Opponent's turn is first.\n")
+    fmt.Printf("\nOpponent's turn is first.\n")
 
     for {
       game.Player2Turn()
