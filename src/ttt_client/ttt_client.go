@@ -10,7 +10,7 @@ type Game struct {
   core.Game
 }
 
-func (game Game) Join() {
+func (game *Game) Join() {
   conn, _ := net.Dial("tcp", ":1234")
   defer conn.Close()
 
@@ -23,11 +23,11 @@ func (game Game) Join() {
   game.Play()
 }
 
-func (game Game) get_turn_sequence(reader *bufio.Reader) {
+func (game *Game) get_turn_sequence(reader *bufio.Reader) {
   game.I_go_first, _ = reader.ReadByte()
 }
 
-func (game Game) get_marks(reader *bufio.Reader) {
+func (game *Game) get_marks(reader *bufio.Reader) {
   game.Player1_mark, _, _ = reader.ReadRune()
   game.Player2_mark, _, _ = reader.ReadRune()
 }

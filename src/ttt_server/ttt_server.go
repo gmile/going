@@ -12,7 +12,7 @@ type Game struct {
   core.Game 
 }
 
-func (game Game) Start() {
+func (game *Game) Start() {
 	server, _ := net.Listen("tcp", ":1234")
   defer server.Close()
 
@@ -33,12 +33,12 @@ func (game Game) Start() {
   game.Play()
 }
 
-func (game Game) set_turn_sequence(writer *bufio.Writer) {
+func (game *Game) set_turn_sequence(writer *bufio.Writer) {
   game.I_go_first = byte(rand.Intn(2))
   writer.WriteByte(1 - game.I_go_first)
 }
 
-func (game Game) set_marks(writer *bufio.Writer) {
+func (game *Game) set_marks(writer *bufio.Writer) {
   if rand.Intn(2) == 0 {
     game.Player1_mark = 'X'
     game.Player2_mark = 'O'
