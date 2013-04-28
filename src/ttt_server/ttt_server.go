@@ -34,8 +34,11 @@ func (game *Game) Start() {
 }
 
 func (game *Game) setTurnSequence(writer *bufio.Writer) {
-  game.I_go_first = byte(rand.Intn(2))
-  writer.WriteByte(1 - game.I_go_first)
+  game.Player1Turn = byte(rand.Intn(2))
+  game.Player2Turn = 1 - game.Player1Turn
+
+  writer.WriteByte(game.Player2Turn)
+  writer.WriteByte(game.Player1Turn)
 }
 
 func (game *Game) setMarks(writer *bufio.Writer) {

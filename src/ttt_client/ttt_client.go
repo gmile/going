@@ -24,7 +24,8 @@ func (game *Game) Join() {
 }
 
 func (game *Game) getTurnSequence(reader *bufio.Reader) {
-  game.I_go_first, _ = reader.ReadByte()
+  game.Player1Turn, _ = reader.ReadByte()
+  game.Player2Turn, _ = reader.ReadByte()
 }
 
 func (game *Game) getMarks(reader *bufio.Reader) {

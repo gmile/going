@@ -9,7 +9,8 @@ import (
 type Game struct {
   Player1Mark rune
   Player2Mark rune
-  I_go_first byte
+  Player1Turn byte
+  Player2Turn byte
   Conn net.Conn
   board [3][3]rune
 }
@@ -78,7 +79,7 @@ func (game *Game) Play() {
 
   game.DrawBoard()
 
-  if game.I_go_first == 1 {
+  if game.Player1Turn == 1 {
     fmt.Printf("\nYour turn is first.\n")
 
     for {
