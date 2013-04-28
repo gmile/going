@@ -7,8 +7,8 @@ import (
 )
 
 type Game struct {
-  Player1_mark rune
-  Player2_mark rune
+  Player1Mark rune
+  Player2Mark rune
   I_go_first byte
   Conn net.Conn
   board [3][3]rune
@@ -21,9 +21,7 @@ func (game *Game) DrawBoard() {
 	fmt.Printf(" c [%c] [%c] [%c]\n", game.board[2][0], game.board[2][1], game.board[2][2])
 }
 
-// TODO: Split this into GameCore, GameClient and GameServer
-
-func (game *Game) RecordTurn(mark rune, row rune, col byte) {
+func (game *Game) recordTurn(mark rune, row rune, col byte) {
 	y := 0
 	x := col - 1
 
@@ -48,7 +46,7 @@ func (game *Game) readInput() (col byte, row rune) {
   return
 }
 
-func (game *Game) MakeTurn() {
+func (game *Game) makeTurn() {
   fmt.Printf("\nMake a turn: ")
 
   col, row := game.readInput()
@@ -58,10 +56,10 @@ func (game *Game) MakeTurn() {
   my_turn.WriteByte(col)
   my_turn.Flush()
 
-  game.RecordTurn(game.Player1_mark, row, col)
+  game.recordTurn(game.Player1Mark, row, col)
 }
 
-func (game *Game) WaitForOtherTurn() {
+func (game *Game) waitForOtherTurn() {
   fmt.Printf("\nWaiting for opponent...\n")
 
   his_turn := bufio.NewReader(game.Conn)
@@ -69,7 +67,7 @@ func (game *Game) WaitForOtherTurn() {
   row, _, _ := his_turn.ReadRune()
   col, _    := his_turn.ReadByte()
 
-  game.RecordTurn(game.Player2_mark, row, col)
+  game.recordTurn(game.Player2Mark, row, col)
 }
 
 func (game *Game) Play() {
@@ -84,15 +82,15 @@ func (game *Game) Play() {
     fmt.Printf("\nYour turn is first.\n")
 
     for {
-      game.MakeTurn()
-      game.WaitForOtherTurn()
+      game.makeTurn()
+      game.waitForOtherTurn()
     }
   } else {
     fmt.Printf("\nOpponent's turn is first.\n")
 
     for {
-      game.WaitForOtherTurn()
-      game.MakeTurn()
+      game.waitForOtherTurn()
+      game.makeTurn()
     }
   }
 }

@@ -17,17 +17,17 @@ func (game *Game) Join() {
   game.Conn = conn
 
   settings := bufio.NewReader(game.Conn)
-  game.get_marks(settings)
-  game.get_turn_sequence(settings)
+  game.getMarks(settings)
+  game.getTurnSequence(settings)
 
   game.Play()
 }
 
-func (game *Game) get_turn_sequence(reader *bufio.Reader) {
+func (game *Game) getTurnSequence(reader *bufio.Reader) {
   game.I_go_first, _ = reader.ReadByte()
 }
 
-func (game *Game) get_marks(reader *bufio.Reader) {
-  game.Player1_mark, _, _ = reader.ReadRune()
-  game.Player2_mark, _, _ = reader.ReadRune()
+func (game *Game) getMarks(reader *bufio.Reader) {
+  game.Player1Mark, _, _ = reader.ReadRune()
+  game.Player2Mark, _, _ = reader.ReadRune()
 }
