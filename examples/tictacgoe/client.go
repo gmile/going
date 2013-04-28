@@ -42,6 +42,8 @@ func (game *Game) RecordTurn(mark rune, row rune, col byte) {
 	game.board[y][x] = mark
 
   game.DrawBoard()
+
+  // TODO: notify spectators
 }
 
 func (game *Game) readInput() (col byte, row rune) {
@@ -49,21 +51,20 @@ func (game *Game) readInput() (col byte, row rune) {
   return
 }
 
-func (game *Game) Player1Turn() {
+func (game *Game) MakeTurn() {
   fmt.Printf("\nMake a turn: ")
 
   col, row := game.readInput()
 
   my_turn := bufio.NewWriter(game.conn)
-  defer my_turn.Flush()
-
   my_turn.WriteRune(row)
   my_turn.WriteByte(col)
+  my_turn.Flush()
 
   game.RecordTurn(game.player1_mark, row, col)
 }
 
-func (game *Game) Player2Turn() {
+func (game *Game) WaitForOtherTurn() {
   fmt.Printf("\nWaiting for opponent...\n")
 
   his_turn := bufio.NewReader(game.conn)
@@ -126,8 +127,8 @@ func (game *Game) set_marks(writer *bufio.Writer) {
     game.player2_mark = 'X'
   }
 
-  writer.WriteRune(game.player1_mark)
   writer.WriteRune(game.player2_mark)
+  writer.WriteRune(game.player1_mark)
 }
 
 func (game *Game) get_marks(reader *bufio.Reader) {
@@ -147,15 +148,15 @@ func (game *Game) play() {
     fmt.Printf("\nYour turn is first.\n")
 
     for {
-      game.Player1Turn()
-      game.Player2Turn()
+      game.MakeTurn()
+      game.WaitForOtherTurn()
     }
   } else {
     fmt.Printf("\nOpponent's turn is first.\n")
 
     for {
-      game.Player2Turn()
-      game.Player1Turn()
+      game.WaitForOtherTurn()
+      game.MakeTurn()
     }
   }
 }
