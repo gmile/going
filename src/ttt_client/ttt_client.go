@@ -16,9 +16,9 @@ func (game *Game) Join() {
 
   game.Conn = conn
 
-  reader := bufio.NewReader(game.Conn)
-  game.get_marks(reader)
-  game.get_turn_sequence(reader)
+  settings := bufio.NewReader(game.Conn)
+  game.get_marks(settings)
+  game.get_turn_sequence(settings)
 
   game.Play()
 }
