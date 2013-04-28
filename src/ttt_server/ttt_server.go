@@ -21,7 +21,7 @@ func (game *Game) Start() {
   conn, _ := server.Accept()
   defer conn.Close()
 
-  fmt.Printf(" opponent connected!\n")
+  fmt.Printf(" connected!\n")
 
   game.Conn = conn
 
