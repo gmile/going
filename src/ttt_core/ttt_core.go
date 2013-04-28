@@ -52,16 +52,12 @@ func (game *Game) checkConditions(mark rune, x, y byte) (win bool) {
   b := game.board
 
   if b[0][x] | b[1][x] | b[2][x] == mark ||
-     b[y][0] | b[y][1] | b[y][2] == mark {
+     b[y][0] | b[y][1] | b[y][2] == mark ||
+     b[0][0] | b[1][1] | b[2][2] == mark ||
+     b[0][2] | b[1][1] | b[2][0] == mark {
     win = true
   }
 
-  if x == 1 && y == 1 {
-    if b[0][0] | b[1][1] | b[2][2] == mark ||
-       b[0][2] | b[1][1] | b[2][0] == mark {
-      win = true
-    }
-  }
   return
 }
 
@@ -85,10 +81,8 @@ func (game *Game) makeTurn() (win bool) {
   }
 
   if win {
-    fmt.Printf("You won.")
+    fmt.Printf("\nYou won!\n")
   }
-
-  game.recordTurn(game.Player2Mark, row, col)
 
   my_turn := bufio.NewWriter(game.Conn)
   my_turn.WriteRune(row)
@@ -109,13 +103,15 @@ func (game *Game) waitForOtherTurn() (win bool) {
   col, _      := his_turn.ReadByte()
   win_code, _ := his_turn.ReadByte()
 
-  if win_code == 1 {
-    fmt.Printf("Other player won.")
-  } else {
-    game.recordTurn(game.Player2Mark, row, col)
+  game.recordTurn(game.Player2Mark, row, col)
+
+  win = win_code == 1
+
+  if win {
+    fmt.Printf("\nOther player won.\n")
   }
 
-  return win_code == 1
+  return
 }
 
 func (game *Game) Play() {
@@ -130,17 +126,15 @@ func (game *Game) Play() {
     fmt.Printf("\nYour turn is first.\n")
 
     for {
-      if game.makeTurn() || game.waitForOtherTurn() {
-        break
-      }
+      if game.makeTurn() { break }
+      if game.waitForOtherTurn() { break }
     }
   } else {
     fmt.Printf("\nOpponent's turn is first.\n")
 
     for {
-      if game.waitForOtherTurn() || game.makeTurn() {
-        break
-      }
+      if game.waitForOtherTurn() { break }
+      if game.makeTurn() { break }
     }
   }
 }
