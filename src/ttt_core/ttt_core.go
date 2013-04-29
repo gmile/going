@@ -127,15 +127,17 @@ func (game *Game) Play() {
     fmt.Printf("\nYour turn is first.\n")
 
     for {
-      if game.makeTurn() { break }
-      if game.waitForOtherTurn() { break }
+      if game.makeTurn() || game.waitForOtherTurn() {
+        break
+      }
     }
   } else {
     fmt.Printf("\nOpponent's turn is first.\n")
 
     for {
-      if game.waitForOtherTurn() { break }
-      if game.makeTurn() { break }
+      if game.waitForOtherTurn() || game.makeTurn() {
+        break
+      }
     }
   }
 }
