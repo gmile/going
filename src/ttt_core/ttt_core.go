@@ -6,6 +6,7 @@ import (
 	"net"
 )
 
+// TODO:
 // player1 -> current_player
 // player2 -> other_player
 // struct Player {
