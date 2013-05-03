@@ -85,8 +85,9 @@ func (game *Game) makeTurn() (win bool) {
   game.SendBuffer.WriteByte(win_code)
   game.SendBuffer.Flush()
 
-  return
   // TODO: game.notifySpectators(x, y, mark)
+
+  return
 }
 
 func (game *Game) waitForOtherTurn() (win bool) {
