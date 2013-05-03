@@ -23,25 +23,24 @@ func (game *Game) Start() {
 
   fmt.Printf(" connected!\n")
 
-  game.Conn = conn
-
-  settings := bufio.NewWriter(game.Conn)
-  game.setMarks(settings)
-  game.setTurnSequence(settings)
-  settings.Flush()
+  game.SendBuffer    = bufio.NewWriter(conn)
+  game.ReceiveBuffer = bufio.NewReader(conn)
+  game.setMarks()
+  game.setTurnSequence()
+  game.SendBuffer.Flush()
 
   game.Play()
 }
 
-func (game *Game) setTurnSequence(writer *bufio.Writer) {
+func (game *Game) setTurnSequence() {
   game.Player1Turn = byte(rand.Intn(2))
   game.Player2Turn = 1 - game.Player1Turn
 
-  writer.WriteByte(game.Player2Turn)
-  writer.WriteByte(game.Player1Turn)
+  game.SendBuffer.WriteByte(game.Player2Turn)
+  game.SendBuffer.WriteByte(game.Player1Turn)
 }
 
-func (game *Game) setMarks(writer *bufio.Writer) {
+func (game *Game) setMarks() {
   if rand.Intn(2) == 0 {
     game.Player1Mark = 'X'
     game.Player2Mark = 'O'
@@ -50,6 +49,6 @@ func (game *Game) setMarks(writer *bufio.Writer) {
     game.Player2Mark = 'X'
   }
 
-  writer.WriteRune(game.Player2Mark)
-  writer.WriteRune(game.Player1Mark)
+  game.SendBuffer.WriteRune(game.Player2Mark)
+  game.SendBuffer.WriteRune(game.Player1Mark)
 }

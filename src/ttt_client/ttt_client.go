@@ -14,21 +14,20 @@ func (game *Game) Join() {
   conn, _ := net.Dial("tcp", ":1234")
   defer conn.Close()
 
-  game.Conn = conn
-
-  settings := bufio.NewReader(game.Conn)
-  game.getMarks(settings)
-  game.getTurnSequence(settings)
+  game.SendBuffer    = bufio.NewWriter(conn)
+  game.ReceiveBuffer = bufio.NewReader(conn)
+  game.getMarks()
+  game.getTurnSequence()
 
   game.Play()
 }
 
-func (game *Game) getTurnSequence(reader *bufio.Reader) {
-  game.Player1Turn, _ = reader.ReadByte()
-  game.Player2Turn, _ = reader.ReadByte()
+func (game *Game) getTurnSequence() {
+  game.Player1Turn, _ = game.ReceiveBuffer.ReadByte()
+  game.Player2Turn, _ = game.ReceiveBuffer.ReadByte()
 }
 
-func (game *Game) getMarks(reader *bufio.Reader) {
-  game.Player1Mark, _, _ = reader.ReadRune()
-  game.Player2Mark, _, _ = reader.ReadRune()
+func (game *Game) getMarks() {
+  game.Player1Mark, _, _ = game.ReceiveBuffer.ReadRune()
+  game.Player2Mark, _, _ = game.ReceiveBuffer.ReadRune()
 }

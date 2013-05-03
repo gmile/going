@@ -3,7 +3,6 @@ package ttt_core
 import (
 	"bufio"
 	"fmt"
-	"net"
 )
 
 // TODO:
@@ -12,6 +11,7 @@ import (
 // struct Player {
 //   turn_order byte
 //   mark rune
+//   data_buffer
 // }
 
 type Game struct {
@@ -19,8 +19,9 @@ type Game struct {
   Player2Mark rune
   Player1Turn byte
   Player2Turn byte
-  Conn net.Conn
   board [3][3]rune
+  SendBuffer    *bufio.Writer
+  ReceiveBuffer *bufio.Reader
 }
 
 func (game *Game) DrawBoard() {
@@ -85,11 +86,10 @@ func (game *Game) makeTurn() (win bool) {
     fmt.Printf("\nYou won!\n")
   }
 
-  my_turn := bufio.NewWriter(game.Conn)
-  my_turn.WriteRune(row)
-  my_turn.WriteByte(col)
-  my_turn.WriteByte(win_code)
-  my_turn.Flush()
+  game.SendBuffer.WriteRune(row)
+  game.SendBuffer.WriteByte(col)
+  game.SendBuffer.WriteByte(win_code)
+  game.SendBuffer.Flush()
 
   return
   // TODO: game.notifySpectators(x, y, mark)
@@ -98,11 +98,9 @@ func (game *Game) makeTurn() (win bool) {
 func (game *Game) waitForOtherTurn() (win bool) {
   fmt.Printf("\nWaiting for opponent...\n")
 
-  his_turn := bufio.NewReader(game.Conn)
-
-  row, _, _   := his_turn.ReadRune()
-  col, _      := his_turn.ReadByte()
-  win_code, _ := his_turn.ReadByte()
+  row, _, _   := game.ReceiveBuffer.ReadRune()
+  col, _      := game.ReceiveBuffer.ReadByte()
+  win_code, _ := game.ReceiveBuffer.ReadByte()
 
   game.recordTurn(game.Player2Mark, row, col)
 
