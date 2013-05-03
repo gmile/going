@@ -5,6 +5,12 @@ import (
 	"fmt"
 )
 
+// TODO:
+//  - command line arguments parsing
+//  - spectators
+//  - error handling
+//  - gofmt
+
 type player struct {
   Mark rune
   TurnOrder byte
