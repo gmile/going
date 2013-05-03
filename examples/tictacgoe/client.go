@@ -1,7 +1,7 @@
 package main
 
 import (
-  client "ttt/client"
+  "ttt/client"
 )
 
 func main() {
