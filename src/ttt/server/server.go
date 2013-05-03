@@ -1,7 +1,7 @@
-package ttt_server
+package server
 
 import (
-  core "ttt_core"
+  core "ttt"
 	"bufio"
 	"fmt"
 	"net"
@@ -33,22 +33,22 @@ func (game *Game) Start() {
 }
 
 func (game *Game) setTurnSequence() {
-  game.Player1Turn = byte(rand.Intn(2))
-  game.Player2Turn = 1 - game.Player1Turn
+  game.CurrentPlayer.TurnOrder = byte(rand.Intn(2))
+  game.OtherPlayer.TurnOrder = 1 - game.CurrentPlayer.TurnOrder
 
-  game.SendBuffer.WriteByte(game.Player2Turn)
-  game.SendBuffer.WriteByte(game.Player1Turn)
+  game.SendBuffer.WriteByte(game.OtherPlayer.TurnOrder)
+  game.SendBuffer.WriteByte(game.CurrentPlayer.TurnOrder)
 }
 
 func (game *Game) setMarks() {
   if rand.Intn(2) == 0 {
-    game.Player1Mark = 'X'
-    game.Player2Mark = 'O'
+    game.CurrentPlayer.Mark = 'X'
+    game.OtherPlayer.Mark = 'O'
   } else {
-    game.Player1Mark = 'O'
-    game.Player2Mark = 'X'
+    game.CurrentPlayer.Mark = 'O'
+    game.OtherPlayer.Mark = 'X'
   }
 
-  game.SendBuffer.WriteRune(game.Player2Mark)
-  game.SendBuffer.WriteRune(game.Player1Mark)
+  game.SendBuffer.WriteRune(game.OtherPlayer.Mark)
+  game.SendBuffer.WriteRune(game.CurrentPlayer.Mark)
 }

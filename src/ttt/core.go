@@ -1,24 +1,18 @@
-package ttt_core
+package core
 
 import (
 	"bufio"
 	"fmt"
 )
 
-// TODO:
-// player1 -> current_player
-// player2 -> other_player
-// struct Player {
-//   turn_order byte
-//   mark rune
-//   data_buffer
-// }
+type player struct {
+  Mark rune
+  TurnOrder byte
+}
 
 type Game struct {
-  Player1Mark rune
-  Player2Mark rune
-  Player1Turn byte
-  Player2Turn byte
+  CurrentPlayer player
+  OtherPlayer player
   board [3][3]rune
   SendBuffer    *bufio.Writer
   ReceiveBuffer *bufio.Reader
@@ -73,7 +67,7 @@ func (game *Game) makeTurn() (win bool) {
 
   col, row := game.readInput()
 
-  win = game.recordTurn(game.Player1Mark, row, col)
+  win = game.recordTurn(game.CurrentPlayer.Mark, row, col)
 
   var win_code byte = 0
   if win {
@@ -102,7 +96,7 @@ func (game *Game) waitForOtherTurn() (win bool) {
   col, _      := game.ReceiveBuffer.ReadByte()
   win_code, _ := game.ReceiveBuffer.ReadByte()
 
-  game.recordTurn(game.Player2Mark, row, col)
+  game.recordTurn(game.OtherPlayer.Mark, row, col)
 
   win = win_code == 1
 
@@ -121,7 +115,7 @@ func (game *Game) Play() {
 
   game.DrawBoard()
 
-  if game.Player1Turn == 1 {
+  if game.CurrentPlayer.TurnOrder == 1 {
     fmt.Printf("\nYour turn is first.\n")
 
     for {

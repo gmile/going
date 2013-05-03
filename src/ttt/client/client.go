@@ -1,7 +1,7 @@
-package ttt_client
+package client
 
 import (
-  core "ttt_core"
+  core "ttt"
 	"bufio"
 	"net"
 )
@@ -23,11 +23,11 @@ func (game *Game) Join() {
 }
 
 func (game *Game) getTurnSequence() {
-  game.Player1Turn, _ = game.ReceiveBuffer.ReadByte()
-  game.Player2Turn, _ = game.ReceiveBuffer.ReadByte()
+  game.CurrentPlayer.TurnOrder, _ = game.ReceiveBuffer.ReadByte()
+  game.OtherPlayer.TurnOrder, _ = game.ReceiveBuffer.ReadByte()
 }
 
 func (game *Game) getMarks() {
-  game.Player1Mark, _, _ = game.ReceiveBuffer.ReadRune()
-  game.Player2Mark, _, _ = game.ReceiveBuffer.ReadRune()
+  game.CurrentPlayer.Mark, _, _ = game.ReceiveBuffer.ReadRune()
+  game.OtherPlayer.Mark, _, _ = game.ReceiveBuffer.ReadRune()
 }
