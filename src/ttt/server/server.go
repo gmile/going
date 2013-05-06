@@ -29,6 +29,8 @@ func (game *Game) Start() {
   game.setTurnSequence()
   game.SendBuffer.Flush()
 
+  go game.Doorman();
+
   game.Play()
 }
 

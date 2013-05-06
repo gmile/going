@@ -5,11 +5,12 @@ import (
 	"fmt"
 )
 
-// TODO:
-//  - command line arguments parsing
+// TODO: 
+//  - command line arguments parsing 
 //  - spectators
 //  - error handling
 //  - gofmt
+//  - draw
 
 type player struct {
   Mark rune
@@ -17,11 +18,12 @@ type player struct {
 }
 
 type Game struct {
-  CurrentPlayer player
-  OtherPlayer player
   board [3][3]rune
+  CurrentPlayer player
+  OtherPlayer   player
   SendBuffer    *bufio.Writer
   ReceiveBuffer *bufio.Reader
+  observers     []*bufio.Writer
 }
 
 func (game *Game) DrawBoard() {
@@ -68,6 +70,16 @@ func (game *Game) readInput() (col byte, row rune) {
   return
 }
 
+func (game *Game) notifySpectators(col byte, row rune, mark rune, win_code byte) {
+  for _, spectator := range game.spectators {
+    spectator.WriteByte(col)
+    spectator.WriteRune(row)
+    spectator.WriteRune(mark)
+    spectator.WriteByte(win_code)
+    spectator.Flush()
+  }
+}
+
 func (game *Game) makeTurn() (win bool) {
   fmt.Printf("\nMake a turn: ")
 
@@ -91,7 +103,7 @@ func (game *Game) makeTurn() (win bool) {
   game.SendBuffer.WriteByte(win_code)
   game.SendBuffer.Flush()
 
-  // TODO: game.notifySpectators(x, y, mark)
+  game.notifySpectators(x, y, mark, win_code)
 
   return
 }
@@ -112,6 +124,21 @@ func (game *Game) waitForOtherTurn() (win bool) {
   }
 
   return
+}
+
+func (game *Game) Doorman() {
+  server, _ := net.Listen("tcp", ":1234")
+  defer server.Close()
+
+  game.observers := make(bufio.Writer[], 1)
+
+  for {
+    conn, _ := net.Accept() 
+    defer conn.Close()
+    game.observers = append(new(bufio.Writer), game.observers)
+
+    // once connected - send him current board state?
+  }
 }
 
 func (game *Game) Play() {
