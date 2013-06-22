@@ -103,12 +103,12 @@ a := [2][2]int{ {1,2}, {3,4} }
 
 sl := make([]int, 10)
 
-var array[m]int
-sl := array[ : ]
-sl := array[0: ]
-sl := array[0:n]
-sl := array[ :n]
-sl := array[x,y]
+var slice[m]int
+sl := slice[ : ]
+sl := slice[0: ]
+sl := slice[0:n]
+sl := slice[ :n]
+sl := slice[x,y]
 len(slice) == n
 cap((slice) == m
 len(array) == cap(array) == m
